@@ -19,6 +19,9 @@ class Env:
             0b1100000111,
         ]
 
+    def is_grid_ground(self, col, row):
+        return self.grid[GRID_VERTICAL_COUNT - 1 - col] >> (GRID_HORIZONTAL_COUNT - 1 - row) & 1 == 1
+
     def column_for(self, x):
         return int(x / T.block_width())
 
@@ -28,13 +31,15 @@ class Env:
     def next_bottom_in_column(self, col, y):
         row = self.row_for(y + DISTANCE_ZERO_THRESHOLD)
 
+        print("NEXTBOTROW", y, "=", row)
+
         if row <= 0:
             return 0
         else:
-            row_bottom = row - 1
-            while row_bottom >= 0 and self.grid[GRID_VERTICAL_COUNT - 1 - row_bottom] == 0:
-                row_bottom -= 1
-            return row_bottom + 1
+            row_current = row - 1
+            while row_current >= 0 and not self.is_grid_ground(col, row_current):
+                row_current -= 1
+            return row_current + 1
 
     def bottom_for(self, e: BoundedElement):
         col_lhs = self.column_for(e.x)
@@ -49,7 +54,7 @@ class Env:
             row_bottom = max(
                 row_bottom, self.next_bottom_in_column(col_rhs, e.y))
 
-        # print(row_bottom)
+        # print("ROWBTM", row_bottom)
 
         return row_bottom * T.block_height()
 

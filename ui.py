@@ -64,8 +64,14 @@ class Player(BoundedElement, Drawable):
     def heading_right(self):
         return self.v_hor > 0
 
+    def heading_down(self):
+        return self.v_vert < 0
+
+    def heading_up(self):
+        return self.v_vert > 0
+
     def update_move(self):
-        if self.y == 0:
+        if self.env.is_at_bottom(self):
             if pyxel.btn(pyxel.KEY_D):
                 self.v_hor = VELOCITY_MOVE
 
@@ -75,7 +81,7 @@ class Player(BoundedElement, Drawable):
         if self.v_hor != 0:
             self.x += self.v_hor
 
-            if self.y == 0:
+            if self.env.is_at_bottom(self):
                 self.v_hor *= FRICTION_DECELERATE
 
             if abs(self.v_hor) < 0.1:
@@ -101,7 +107,14 @@ class Player(BoundedElement, Drawable):
             self.v_vert = max(VELOCITY_FALL_MAX, self.v_vert *
                               (1.0 + GRAVITY_DECELERATE))
 
-        self.y += self.v_vert
+        next_bottom = self.env.bottom_for(self)
+
+        # print(next_bottom)
+
+        if self.heading_down and next_bottom > self.y + self.v_vert:
+            self.y = next_bottom
+        else:
+            self.y += self.v_vert
 
         if self.env.is_at_bottom(self):
             self.y = self.env.bottom_for(self)
