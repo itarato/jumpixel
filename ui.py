@@ -78,11 +78,15 @@ class Player(BoundedElement, Drawable):
 
     def update_move(self):
         if self.env.is_at_bottom(self):
-            if pyxel.btn(pyxel.KEY_D):
-                self.v_hor = VELOCITY_MOVE
+            move_velocity = VELOCITY_MOVE
+        else:
+            move_velocity = VELOCITY_MOVE_AIR
 
-            if pyxel.btn(pyxel.KEY_A):
-                self.v_hor = -VELOCITY_MOVE
+        if pyxel.btn(pyxel.KEY_D):
+            self.v_hor = move_velocity
+
+        if pyxel.btn(pyxel.KEY_A):
+            self.v_hor = -move_velocity
 
         if self.v_hor != 0:
             self.x += self.v_hor

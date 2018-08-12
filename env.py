@@ -20,6 +20,8 @@ class Env:
         ]
 
     def is_grid_ground(self, col, row):
+        col = min(max(0, col), GRID_HORIZONTAL_COUNT - 1)
+        row = min(max(0, row), GRID_VERTICAL_COUNT - 1)
         return self.grid[GRID_VERTICAL_COUNT - 1 - row] >> (GRID_HORIZONTAL_COUNT - 1 - col) & 1 == 1
 
     def column_for(self, x):
@@ -31,7 +33,7 @@ class Env:
     def next_bottom_in_column(self, col, y):
         row = self.row_for(y + DISTANCE_ZERO_THRESHOLD)
 
-        print("NEXTBOTROW", y, "=", row)
+        # print("NEXTBOTROW", y, "=", row)
 
         if row <= 0:
             return 0
@@ -62,6 +64,8 @@ class Env:
         return e.y - self.bottom_for(e) < DISTANCE_ZERO_THRESHOLD
 
     def left_for(self, e: BoundedElement):
+        row_bottom = self.row_for(e.y)
+        row_top = self.row_for(e.y + e.height)
         return 0
 
     def is_at_left(self, e: BoundedElement):
