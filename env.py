@@ -1,6 +1,7 @@
 import pyxel
 from globals import *
 from util import *
+from ui import *
 
 
 class Env:
@@ -35,34 +36,34 @@ class Env:
                 row_bottom -= 1
             return row_bottom + 1
 
-    def bottom_for(self, x, y, w):
-        col_lhs = self.column_for(x)
-        col_rhs = self.column_for(x + w)
+    def bottom_for(self, e: BoundedElement):
+        col_lhs = self.column_for(e.x)
+        col_rhs = self.column_for(e.x + e.width)
 
         # print("COLLHS", col_lhs, "COLRHS", col_rhs)
         # print(self.row_for(y))
 
-        row_bottom = self.next_bottom_in_column(col_lhs, y)
+        row_bottom = self.next_bottom_in_column(col_lhs, e.y)
 
         if col_rhs != col_lhs:
             row_bottom = max(
-                row_bottom, self.next_bottom_in_column(col_rhs, y))
+                row_bottom, self.next_bottom_in_column(col_rhs, e.y))
 
         # print(row_bottom)
 
         return row_bottom * T.block_height()
 
-    def is_at_bottom(self, x, y, w):
-        return y - self.bottom_for(x, y, w) < DISTANCE_ZERO_THRESHOLD
+    def is_at_bottom(self, e: BoundedElement):
+        return e.y - self.bottom_for(e) < DISTANCE_ZERO_THRESHOLD
 
-    def left_for(self, x, y, h):
+    def left_for(self, e: BoundedElement):
         return 0
 
-    def is_at_left(self, x, y, h):
-        return x - self.left_for(x, y, h) < DISTANCE_ZERO_THRESHOLD
+    def is_at_left(self, e: BoundedElement):
+        return e.x - self.left_for(e) < DISTANCE_ZERO_THRESHOLD
 
-    def right_for(self, x, y, w, h):
+    def right_for(self, e: BoundedElement):
         return pyxel.width
 
-    def is_at_right(self, x, y, w, h):
-        return self.right_for(x, y, w, h) - (x + w) < DISTANCE_ZERO_THRESHOLD
+    def is_at_right(self, e: BoundedElement):
+        return self.right_for(e) - (e.x + e.width) < DISTANCE_ZERO_THRESHOLD

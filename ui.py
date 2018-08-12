@@ -33,7 +33,15 @@ class Blocks(Drawable):
                                * block_width, (y + 1) * block_height, 7)
 
 
-class Player(Drawable):
+class BoundedElement():
+    def __init__(self):
+        self.height = 0
+        self.width = 0
+        self.x = 0
+        self.y = 0
+
+
+class Player(BoundedElement, Drawable):
     def __init__(self, env):
         super().__init__()
 
@@ -73,16 +81,15 @@ class Player(Drawable):
             if abs(self.v_hor) < 0.1:
                 self.v_hor = 0.0
 
-        if self.env.is_at_left(self.x, self.y, self.height) and self.heading_left():
+        if self.env.is_at_left(self) and self.heading_left():
             self.v_hor = 0
-            self.x = self.env.left_for(self.x, self.y, self.height)
-        elif self.env.is_at_right(self.x, self.y, self.width, self.height) and self.heading_right():
+            self.x = self.env.left_for(self)
+        elif self.env.is_at_right(self) and self.heading_right():
             self.v_hor = 0
-            self.x = self.env.right_for(
-                self.x, self.y, self.width, self.height) - self.width
+            self.x = self.env.right_for(self) - self.width
 
     def update_jump(self):
-        if self.env.is_at_bottom(self.x, self.y, self.width):
+        if self.env.is_at_bottom(self):
             if pyxel.btn(pyxel.KEY_SPACE):
                 self.v_vert = 10
 
@@ -96,8 +103,8 @@ class Player(Drawable):
 
         self.y += self.v_vert
 
-        if self.env.is_at_bottom(self.x, self.y, self.width):
-            self.y = self.env.bottom_for(self.x, self.y, self.width)
+        if self.env.is_at_bottom(self):
+            self.y = self.env.bottom_for(self)
             self.v_vert = 0
 
     def update(self):
