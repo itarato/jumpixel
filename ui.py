@@ -53,7 +53,7 @@ class Player(BoundedElement, Drawable):
         self.height = block_height - 4
         self.width = block_width - 4
         self.x = 100
-        self.y = 100
+        self.y = 200
 
         self.v_vert = GRAVITY_VELOCITY_START
         self.v_hor = 0.0
@@ -76,17 +76,17 @@ class Player(BoundedElement, Drawable):
     def vmove_idle(self):
         return self.v_vert == 0
 
-    def read_input(self):
-        if self.env.is_at_bottom(self):
-            move_velocity = VELOCITY_MOVE
-        else:
-            move_velocity = VELOCITY_MOVE_AIR
+    def is_hmove_btn(self):
+        return pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.KEY_A)
 
+    def read_input(self):
         if pyxel.btn(pyxel.KEY_D):
-            self.v_hor = move_velocity
+            self.v_hor += VELOCITY_MOVE_STEP
+            self.v_hor = min(self.v_hor, VELOCITY_MOVE_MAX)
 
         if pyxel.btn(pyxel.KEY_A):
-            self.v_hor = -move_velocity
+            self.v_hor -= VELOCITY_MOVE_STEP
+            self.v_hor = max(self.v_hor, -VELOCITY_MOVE_MAX)
 
         if self.env.is_at_bottom(self):
             if pyxel.btn(pyxel.KEY_W):
@@ -104,7 +104,7 @@ class Player(BoundedElement, Drawable):
             else:
                 self.x += self.v_hor
 
-            if self.env.is_at_bottom(self):
+            if self.env.is_at_bottom(self) and not self.is_hmove_btn():
                 self.v_hor *= FRICTION_DECELERATE
 
             if abs(self.v_hor) < 0.1:
