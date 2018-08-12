@@ -7,16 +7,14 @@ from ui import *
 class Env:
     def __init__(self):
         self.grid = [
-            0b0000000000,
-            0b0000000000,
-            0b0000000000,
-            0b0000000000,
-            0b0000000000,
-            0b0000000000,
-            0b0000000100,
-            0b0000001001,
-            0b1000010001,
-            0b1100100111,
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b00000100,
+            0b00001001,
+            0b10000001,
+            0b11000111,
         ]
 
     def is_grid_ground(self, col, row):
@@ -33,8 +31,6 @@ class Env:
     def next_bottom_in_column(self, col, y):
         row = self.row_for(y + DISTANCE_ZERO_THRESHOLD)
 
-        # print("NEXTBOTROW", y, "=", row)
-
         if row <= 0:
             return 0
         else:
@@ -43,20 +39,34 @@ class Env:
                 row_current -= 1
             return row_current + 1
 
-    def bottom_for(self, e: BoundedElement):
-        col_lhs = self.column_for(e.x)
-        col_rhs = self.column_for(e.x + e.width)
+    def next_left_in_row(self, row, x):
+        col = self.column_for(x + DISTANCE_ZERO_THRESHOLD)
 
-        # print("COLLHS", col_lhs, "COLRHS", col_rhs)
-        # print(self.row_for(y))
+        if col <= 0:
+            return 0
+        else:
+            col_current = col - 1
+            while col_current >= 0 and not self.is_grid_ground(col_current, row):
+                col_current -= 1
+            return col_current + 1
+
+    def next_right_in_row(self, row, x):
+        col = self.column_for(x - DISTANCE_ZERO_THRESHOLD)
+
+        if col >= GRID_HORIZONTAL_COUNT - 1:
+            return GRID_HORIZONTAL_COUNT
+        else:
+            col_current = col + 1
+            while col_current < GRID_VERTICAL_COUNT and not self.is_grid_ground(col_current, row):
+                col_current += 1
+            return col_current
+
+    def bottom_for(self, e: BoundedElement):
+        col_lhs = self.column_for(e.x + DISTANCE_ZERO_THRESHOLD)
+        col_rhs = self.column_for(e.x + e.width - DISTANCE_ZERO_THRESHOLD)
 
         row_bottom = self.next_bottom_in_column(col_lhs, e.y)
-
-        if col_rhs != col_lhs:
-            row_bottom = max(
-                row_bottom, self.next_bottom_in_column(col_rhs, e.y))
-
-        # print("ROWBTM", row_bottom)
+        row_bottom = max(row_bottom, self.next_bottom_in_column(col_rhs, e.y))
 
         return row_bottom * T.block_height()
 
@@ -66,13 +76,26 @@ class Env:
     def left_for(self, e: BoundedElement):
         row_bottom = self.row_for(e.y)
         row_top = self.row_for(e.y + e.height)
-        return 0
+
+        col_left = self.next_left_in_row(row_bottom, e.x)
+        col_left = max(col_left, self.next_left_in_row(row_top, e.x))
+
+        return col_left * T.block_width()
 
     def is_at_left(self, e: BoundedElement):
         return e.x - self.left_for(e) < DISTANCE_ZERO_THRESHOLD
 
     def right_for(self, e: BoundedElement):
-        return pyxel.width
+        row_bottom = self.row_for(e.y)
+        row_top = self.row_for(e.y + e.height)
+
+        col_right = self.next_right_in_row(row_bottom, e.x + e.width)
+        col_right = max(col_right, self.next_right_in_row(
+            row_top, e.x + e.width))
+
+        # print(col_right, T.block_width())
+
+        return col_right * T.block_width()
 
     def is_at_right(self, e: BoundedElement):
         return self.right_for(e) - (e.x + e.width) < DISTANCE_ZERO_THRESHOLD

@@ -50,8 +50,8 @@ class Player(BoundedElement, Drawable):
         block_width = pyxel.width / GRID_HORIZONTAL_COUNT
         block_height = pyxel.height / GRID_VERTICAL_COUNT
 
-        self.height = block_height
-        self.width = block_width
+        self.height = block_height - 4
+        self.width = block_width - 4
         self.x = 100
         self.y = 100
 
@@ -76,7 +76,7 @@ class Player(BoundedElement, Drawable):
     def vmove_idle(self):
         return self.v_vert == 0
 
-    def update_move(self):
+    def read_input(self):
         if self.env.is_at_bottom(self):
             move_velocity = VELOCITY_MOVE
         else:
@@ -88,8 +88,21 @@ class Player(BoundedElement, Drawable):
         if pyxel.btn(pyxel.KEY_A):
             self.v_hor = -move_velocity
 
+        if self.env.is_at_bottom(self):
+            if pyxel.btn(pyxel.KEY_W):
+                self.v_vert = VELOCITY_JUMP
+
+    def update_move(self):
         if self.v_hor != 0:
-            self.x += self.v_hor
+            next_left = self.env.left_for(self)
+            next_right = self.env.right_for(self)
+
+            if self.hmove_left and self.x + self.v_hor < next_left:
+                self.x = next_left
+            elif self.hmove_right and (self.x + self.width) + self.v_hor > next_right:
+                self.x = next_right - self.width
+            else:
+                self.x += self.v_hor
 
             if self.env.is_at_bottom(self):
                 self.v_hor *= FRICTION_DECELERATE
@@ -105,10 +118,6 @@ class Player(BoundedElement, Drawable):
             self.x = self.env.right_for(self) - self.width
 
     def update_jump(self):
-        if self.env.is_at_bottom(self):
-            if pyxel.btn(pyxel.KEY_SPACE):
-                self.v_vert = VELOCITY_JUMP
-
         if self.v_vert > 0:
             self.v_vert *= GRAVITY_DECELERATE
             if self.v_vert <= 1:
@@ -118,8 +127,6 @@ class Player(BoundedElement, Drawable):
                               (1.0 + GRAVITY_DECELERATE))
 
         next_bottom = self.env.bottom_for(self)
-
-        # print(next_bottom)
 
         if self.vmove_down and next_bottom > self.y + self.v_vert:
             self.y = next_bottom
@@ -135,6 +142,7 @@ class Player(BoundedElement, Drawable):
             self.v_vert = -GRAVITY_VELOCITY_START
 
     def update(self):
+        self.read_input()
         self.update_move()
         self.update_jump()
         self.update_fall()
