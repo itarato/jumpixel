@@ -13,14 +13,14 @@ class Env:
             0b0000000000,
             0b0000000000,
             0b0000000000,
-            0b0000000000,
-            0b0000000001,
-            0b1000000001,
-            0b1100000111,
+            0b0000000100,
+            0b0000001001,
+            0b1000010001,
+            0b1100100111,
         ]
 
     def is_grid_ground(self, col, row):
-        return self.grid[GRID_VERTICAL_COUNT - 1 - col] >> (GRID_HORIZONTAL_COUNT - 1 - row) & 1 == 1
+        return self.grid[GRID_VERTICAL_COUNT - 1 - row] >> (GRID_HORIZONTAL_COUNT - 1 - col) & 1 == 1
 
     def column_for(self, x):
         return int(x / T.block_width())

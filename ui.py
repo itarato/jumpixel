@@ -58,17 +58,23 @@ class Player(BoundedElement, Drawable):
         self.v_vert = GRAVITY_VELOCITY_START
         self.v_hor = 0.0
 
-    def heading_left(self):
+    def hmove_left(self):
         return self.v_hor < 0
 
-    def heading_right(self):
+    def hmove_right(self):
         return self.v_hor > 0
 
-    def heading_down(self):
+    def vmove_down(self):
         return self.v_vert < 0
 
-    def heading_up(self):
+    def vmove_up(self):
         return self.v_vert > 0
+
+    def hmove_idle(self):
+        return self.v_hor == 0
+
+    def vmove_idle(self):
+        return self.v_vert == 0
 
     def update_move(self):
         if self.env.is_at_bottom(self):
@@ -87,17 +93,17 @@ class Player(BoundedElement, Drawable):
             if abs(self.v_hor) < 0.1:
                 self.v_hor = 0.0
 
-        if self.env.is_at_left(self) and self.heading_left():
+        if self.env.is_at_left(self) and self.hmove_left():
             self.v_hor = 0
             self.x = self.env.left_for(self)
-        elif self.env.is_at_right(self) and self.heading_right():
+        elif self.env.is_at_right(self) and self.hmove_right():
             self.v_hor = 0
             self.x = self.env.right_for(self) - self.width
 
     def update_jump(self):
         if self.env.is_at_bottom(self):
             if pyxel.btn(pyxel.KEY_SPACE):
-                self.v_vert = 10
+                self.v_vert = VELOCITY_JUMP
 
         if self.v_vert > 0:
             self.v_vert *= GRAVITY_DECELERATE
@@ -111,7 +117,7 @@ class Player(BoundedElement, Drawable):
 
         # print(next_bottom)
 
-        if self.heading_down and next_bottom > self.y + self.v_vert:
+        if self.vmove_down and next_bottom > self.y + self.v_vert:
             self.y = next_bottom
         else:
             self.y += self.v_vert
@@ -120,9 +126,14 @@ class Player(BoundedElement, Drawable):
             self.y = self.env.bottom_for(self)
             self.v_vert = 0
 
+    def update_fall(self):
+        if self.vmove_idle() and not self.env.is_at_bottom(self):
+            self.v_vert = -GRAVITY_VELOCITY_START
+
     def update(self):
         self.update_move()
         self.update_jump()
+        self.update_fall()
 
     def draw(self):
         T.rect(self.x, self.y, self.width, self.height)
