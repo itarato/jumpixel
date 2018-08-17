@@ -52,15 +52,14 @@ class Food(Drawable, BoundedElement):
         self.x = x
         self.y = y
 
-    def update(self):
-        pass
-
     def draw(self):
         T.rect(self.x, self.y, self.width, self.height, c=4)
 
 
 class Foods(Drawable):
     def __init__(self, env):
+        super().__init__()
+
         self.env = env
         self.foods = []
         self.init_food()
@@ -72,13 +71,7 @@ class Foods(Drawable):
                     food = Food(col * T.block_width() +
                                 11, row * T.block_height() + 1)
                     self.foods.append(food)
-
-    def update(self):
-        pass
-
-    def draw(self):
-        for food in self.foods:
-            food.draw()
+                    self.elements.append(food)
 
 
 class Player(BoundedElement, Drawable):
