@@ -24,7 +24,6 @@ class Drawable:
 class Blocks(Drawable):
     def __init__(self, env):
         super().__init__()
-
         self.env = env
 
     def draw(self):
@@ -34,7 +33,7 @@ class Blocks(Drawable):
             for x in range(GRID_HORIZONTAL_COUNT):
                 if (self.env.grid[y] >> (GRID_HORIZONTAL_COUNT - x - 1)) & 1:
                     pyxel.rect(x * block_width, y * block_height, (x + 1)
-                               * block_width - 1, (y + 1) * block_height - 1, 7)
+                               * block_width - 1, (y + 1) * block_height - 1, 3)
 
 
 class BoundedElement():
@@ -43,6 +42,43 @@ class BoundedElement():
         self.width = 0
         self.x = 0
         self.y = 0
+
+
+class Food(Drawable, BoundedElement):
+    def __init__(self, x, y):
+        super().__init__()
+        self.height = 8
+        self.width = 8
+        self.x = x
+        self.y = y
+
+    def update(self):
+        pass
+
+    def draw(self):
+        T.rect(self.x, self.y, self.width, self.height, c=4)
+
+
+class Foods(Drawable):
+    def __init__(self, env):
+        self.env = env
+        self.foods = []
+        self.init_food()
+
+    def init_food(self):
+        for row in range(GRID_VERTICAL_COUNT):
+            for col in range(GRID_HORIZONTAL_COUNT):
+                if self.env.is_food(col, row):
+                    food = Food(col * T.block_width() +
+                                11, row * T.block_height() + 1)
+                    self.foods.append(food)
+
+    def update(self):
+        pass
+
+    def draw(self):
+        for food in self.foods:
+            food.draw()
 
 
 class Player(BoundedElement, Drawable):
@@ -158,7 +194,7 @@ class Player(BoundedElement, Drawable):
         self.update_fall()
 
     def draw(self):
-        T.rect(self.x, self.y, self.width, self.height)
+        T.rect(self.x, self.y, self.width, self.height, c=15)
         T.rect(self.x + 5, self.y, 6, 6, c=0)
         if self.dir == DIR_LEFT:
             T.rect(self.x, self.y + self.height - 12, 6, 6, c=0)

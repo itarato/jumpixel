@@ -17,10 +17,22 @@ class Env:
             0b11000111,
         ]
 
+        self.food = [
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b10000100,
+            0b00000001,
+            0b00000000,
+            0b01000000,
+            0b00000000,
+        ]
+
     def is_grid_ground(self, col, row):
-        col = min(max(0, col), GRID_HORIZONTAL_COUNT - 1)
-        row = min(max(0, row), GRID_VERTICAL_COUNT - 1)
-        return self.grid[GRID_VERTICAL_COUNT - 1 - row] >> (GRID_HORIZONTAL_COUNT - 1 - col) & 1 == 1
+        return T.is_grid_cell_on(self.grid, col, row)
+
+    def is_food(self, col, row):
+        return T.is_grid_cell_on(self.food, col, row)
 
     def column_for(self, x):
         return int(x / T.block_width())

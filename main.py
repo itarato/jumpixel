@@ -13,6 +13,7 @@ class App:
         self.scene = Drawable()
         self.scene.elements.append(Blocks(self.env))
         self.scene.elements.append(Player(self.env))
+        self.scene.elements.append(Foods(self.env))
 
         pyxel.run(self.update, self.draw)
 
