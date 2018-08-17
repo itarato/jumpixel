@@ -99,6 +99,9 @@ class Player(BoundedElement, Drawable):
             if pyxel.btnp(pyxel.KEY_W):
                 self.v_vert = VELOCITY_JUMP
 
+        if pyxel.btnr(pyxel.KEY_W) and self.vmove_up():
+            self.v_vert = -DISTANCE_ZERO_THRESHOLD
+
     def update_move(self):
         if self.v_hor != 0:
             next_left = self.env.left_for(self)
@@ -128,7 +131,7 @@ class Player(BoundedElement, Drawable):
         if self.v_vert > 0:
             self.v_vert *= GRAVITY_DECELERATE
             if self.v_vert <= 1:
-                self.v_vert = -0.1
+                self.v_vert = -DISTANCE_ZERO_THRESHOLD
         elif self.v_vert < 0:
             self.v_vert = max(VELOCITY_FALL_MAX, self.v_vert *
                               (1.0 + GRAVITY_DECELERATE))
