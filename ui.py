@@ -3,6 +3,10 @@ from globals import *
 from util import *
 
 
+DIR_LEFT = 0
+DIR_RIGHT = 1
+
+
 class Drawable:
     def __init__(self):
         print("Created new ", self.__class__)
@@ -30,7 +34,7 @@ class Blocks(Drawable):
             for x in range(GRID_HORIZONTAL_COUNT):
                 if (self.env.grid[y] >> (GRID_HORIZONTAL_COUNT - x - 1)) & 1:
                     pyxel.rect(x * block_width, y * block_height, (x + 1)
-                               * block_width, (y + 1) * block_height, 7)
+                               * block_width - 1, (y + 1) * block_height - 1, 7)
 
 
 class BoundedElement():
@@ -51,12 +55,13 @@ class Player(BoundedElement, Drawable):
         block_height = pyxel.height / GRID_VERTICAL_COUNT
 
         self.height = block_height - 4
-        self.width = block_width - 4
+        self.width = int(block_width) >> 1
         self.x = 100
         self.y = 200
 
         self.v_vert = GRAVITY_VELOCITY_START
         self.v_hor = 0.0
+        self.dir = DIR_LEFT
 
     def hmove_left(self):
         return self.v_hor < 0
@@ -83,13 +88,15 @@ class Player(BoundedElement, Drawable):
         if pyxel.btn(pyxel.KEY_D):
             self.v_hor += VELOCITY_MOVE_STEP
             self.v_hor = min(self.v_hor, VELOCITY_MOVE_MAX)
+            self.dir = DIR_RIGHT
 
         if pyxel.btn(pyxel.KEY_A):
             self.v_hor -= VELOCITY_MOVE_STEP
             self.v_hor = max(self.v_hor, -VELOCITY_MOVE_MAX)
+            self.dir = DIR_LEFT
 
         if self.env.is_at_bottom(self):
-            if pyxel.btn(pyxel.KEY_W):
+            if pyxel.btnp(pyxel.KEY_W):
                 self.v_vert = VELOCITY_JUMP
 
     def update_move(self):
@@ -149,3 +156,9 @@ class Player(BoundedElement, Drawable):
 
     def draw(self):
         T.rect(self.x, self.y, self.width, self.height)
+        T.rect(self.x + 5, self.y, 6, 6, c=0)
+        if self.dir == DIR_LEFT:
+            T.rect(self.x, self.y + self.height - 12, 6, 6, c=0)
+        else:
+            T.rect(self.x + self.width - 6, self.y +
+                   self.height - 12, 6, 6, c=0)

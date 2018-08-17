@@ -7,7 +7,7 @@ from ui import *
 
 class App:
     def __init__(self):
-        pyxel.init(256, 256, fps=30)
+        pyxel.init(256, 256, fps=60)
 
         self.env = Env()
         self.scene = Drawable()
