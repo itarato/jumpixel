@@ -3,6 +3,7 @@ import pyxel
 from globals import *
 from env import *
 from ui import *
+from sound import *
 
 
 class App:
@@ -10,6 +11,7 @@ class App:
         pyxel.init(256, 256, fps=60)
 
         self.env = Env()
+        self.sound = SoundEffects(self.env)
         self.scene = Drawable()
         self.scene.elements.append(Blocks(self.env))
         self.scene.elements.append(Player(self.env))

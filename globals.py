@@ -12,4 +12,6 @@ DISTANCE_ZERO_THRESHOLD = 0.2
 GRAVITY_VELOCITY_START = 0.2
 
 EVENT_EAT_TRY = 'eat_try'  # ARG: BoundedElement
-EVENT_EAT_SUCCESS = 'eat_success'  # ARG: -
+EVENT_EAT_SUCCESS = 'eat_success'
+EVENT_WALK_START = 'walk_start'
+EVENT_WALK_STOP = 'walk_stop'

@@ -136,11 +136,13 @@ class Player(BoundedElement, Drawable):
             self.v_hor += VELOCITY_MOVE_STEP
             self.v_hor = min(self.v_hor, VELOCITY_MOVE_MAX)
             self.dir = DIR_RIGHT
+            self.env.eventloop.send(EVENT_WALK_START)
 
         if pyxel.btn(pyxel.KEY_A):
             self.v_hor -= VELOCITY_MOVE_STEP
             self.v_hor = max(self.v_hor, -VELOCITY_MOVE_MAX)
             self.dir = DIR_LEFT
+            self.env.eventloop.send(EVENT_WALK_START)
 
         if self.env.is_at_bottom(self):
             if pyxel.btnp(pyxel.KEY_W):
@@ -148,6 +150,9 @@ class Player(BoundedElement, Drawable):
 
         if pyxel.btnr(pyxel.KEY_W) and self.vmove_up():
             self.v_vert = -DISTANCE_ZERO_THRESHOLD
+
+        if pyxel.btnr(pyxel.KEY_A) or pyxel.btnr(pyxel.KEY_D):
+            self.env.eventloop.send(EVENT_WALK_STOP)
 
     def update_move(self):
         if self.v_hor != 0:
