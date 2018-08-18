@@ -96,13 +96,14 @@ class Player(BoundedElement, Drawable):
     def __init__(self, env):
         super().__init__()
 
+        pyxel.image(0).load(0, 0, 'ruby.png')
         self.env = env
 
         block_width = pyxel.width / GRID_HORIZONTAL_COUNT
         block_height = pyxel.height / GRID_VERTICAL_COUNT
 
-        self.height = block_height - 4
-        self.width = int(block_width) >> 1
+        self.height = 20
+        self.width = 28
         self.x = 100
         self.y = 200
 
@@ -214,13 +215,16 @@ class Player(BoundedElement, Drawable):
         self.check_food()
 
     def draw(self):
-        T.rect(self.x, self.y, self.width, self.height, c=15)
-        T.rect(self.x + 5, self.y, 6, 6, c=0)
+        pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, 28, 20)
+        # T.rect(self.x, self.y, self.width, self.height, c=15)
+        # T.rect(self.x + 5, self.y, 6, 6, c=0)
         if self.dir == DIR_LEFT:
-            T.rect(self.x, self.y + self.height - 12, 6, 6, c=0)
+        #     T.rect(self.x, self.y + self.height - 12, 6, 6, c=0)
+            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, -28, 20)
         else:
-            T.rect(self.x + self.width - 6, self.y +
-                   self.height - 12, 6, 6, c=0)
+            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, 28, 20)
+        #     T.rect(self.x + self.width - 6, self.y +
+        #            self.height - 12, 6, 6, c=0)
 
 
 class Score(Drawable):
