@@ -11,4 +11,5 @@ VELOCITY_MOVE_STEP = 1
 DISTANCE_ZERO_THRESHOLD = 0.2
 GRAVITY_VELOCITY_START = 0.2
 
-EVENT_EAT = 'event_eat'  # ARG: BoundedElement
+EVENT_EAT_TRY = 'eat_try'  # ARG: BoundedElement
+EVENT_EAT_SUCCESS = 'eat_success'  # ARG: -

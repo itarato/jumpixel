@@ -7,7 +7,7 @@ class EventLoop:
             self.subs[event] = []
         self.subs[event].append(handler)
 
-    def send(self, event, payload):
+    def send(self, event, payload=None):
         if event in self.subs:
             for sub in self.subs[event]:
                 sub(payload)

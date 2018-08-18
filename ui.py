@@ -73,13 +73,14 @@ class Foods(Drawable):
         self.foods = []
         self.init_food()
 
-        self.env.eventloop.sub(EVENT_EAT, self.check_eating)
+        self.env.eventloop.sub(EVENT_EAT_TRY, self.check_eating)
 
     def check_eating(self, eater: BoundedElement):
         for food in self.foods:
             if food.is_cover(eater):
                 self.foods.remove(food)
                 self.elements.remove(food)
+                self.env.eventloop.send(EVENT_EAT_SUCCESS)
 
     def init_food(self):
         for row in range(GRID_VERTICAL_COUNT):
@@ -198,7 +199,7 @@ class Player(BoundedElement, Drawable):
             self.v_vert = -GRAVITY_VELOCITY_START
 
     def check_food(self):
-        self.env.eventloop.send(EVENT_EAT, self)
+        self.env.eventloop.send(EVENT_EAT_TRY, self)
 
     def update(self):
         self.read_input()
@@ -215,3 +216,17 @@ class Player(BoundedElement, Drawable):
         else:
             T.rect(self.x + self.width - 6, self.y +
                    self.height - 12, 6, 6, c=0)
+
+
+class Score(Drawable):
+    def __init__(self, env):
+        super().__init__()
+
+        self.score = 0
+        env.eventloop.sub(EVENT_EAT_SUCCESS, self.inc)
+
+    def inc(self, _):
+        self.score += 1
+
+    def draw(self):
+        pyxel.text(pyxel.width - 8, 4, str(self.score), 6)
