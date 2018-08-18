@@ -15,3 +15,4 @@ EVENT_EAT_TRY = 'eat_try'  # ARG: BoundedElement
 EVENT_EAT_SUCCESS = 'eat_success'
 EVENT_WALK_START = 'walk_start'
 EVENT_WALK_STOP = 'walk_stop'
+EVENT_GAME_START = 'game_start'

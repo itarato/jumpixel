@@ -18,6 +18,8 @@ class App:
         self.scene.elements.append(Foods(self.env))
         self.scene.elements.append(Score(self.env))
 
+        self.env.eventloop.send(EVENT_GAME_START)
+
         pyxel.run(self.update, self.draw)
 
     def update(self):
