@@ -16,7 +16,7 @@ class SoundEffects:
         pyxel.sound(SOUND_WALK).set('E1C1', 'NN', '66', 'NN', 5)
 
     def eat_effect(self, _):
-        pyxel.play(1, 0)
+        pyxel.play(2, 0)
 
     def walk_effect(self, _):
         pyxel.play(1, 1, loop=True)
