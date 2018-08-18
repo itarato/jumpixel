@@ -26,9 +26,8 @@ class SoundEffects:
         pyxel.play(2, SOUND_WALK, loop=True)
 
     def walk_effect_stop(self, _):
-        pyxel.stop(SOUND_WALK)
+        pyxel.stop(2)
 
     def background_effect(self, _):
-        print('b')
-        pyxel.play(3, SOUND_BACKGROUND, loop=True)
+        pyxel.play(0, SOUND_BACKGROUND, loop=True)
 
