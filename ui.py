@@ -43,6 +43,15 @@ class BoundedElement():
         self.x = 0
         self.y = 0
 
+    def x2(self):
+        return self.x + self.width - 1
+
+    def y2(self):
+        return self.y + self.height - 1
+
+    def is_cover(self, rhs):
+        return (self.x <= rhs.x2()) and (self.x2() >= rhs.x) and (self.y <= rhs.y2()) and (self.y2() >= rhs.y)
+
 
 class Food(Drawable, BoundedElement):
     def __init__(self, x, y):
@@ -63,6 +72,14 @@ class Foods(Drawable):
         self.env = env
         self.foods = []
         self.init_food()
+
+        self.env.eventloop.sub(EVENT_EAT, self.check_eating)
+
+    def check_eating(self, eater: BoundedElement):
+        for food in self.foods:
+            if food.is_cover(eater):
+                self.foods.remove(food)
+                self.elements.remove(food)
 
     def init_food(self):
         for row in range(GRID_VERTICAL_COUNT):
@@ -180,11 +197,15 @@ class Player(BoundedElement, Drawable):
         if self.vmove_idle() and not self.env.is_at_bottom(self):
             self.v_vert = -GRAVITY_VELOCITY_START
 
+    def check_food(self):
+        self.env.eventloop.send(EVENT_EAT, self)
+
     def update(self):
         self.read_input()
         self.update_move()
         self.update_jump()
         self.update_fall()
+        self.check_food()
 
     def draw(self):
         T.rect(self.x, self.y, self.width, self.height, c=15)

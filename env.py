@@ -2,6 +2,7 @@ import pyxel
 from globals import *
 from util import *
 from ui import *
+from events import *
 
 
 class Env:
@@ -28,11 +29,17 @@ class Env:
             0b00000000,
         ]
 
-    def is_grid_ground(self, col, row):
+        self.eventloop = EventLoop()
+
+    def is_ground(self, col, row):
         return T.is_grid_cell_on(self.grid, col, row)
 
     def is_food(self, col, row):
         return T.is_grid_cell_on(self.food, col, row)
+
+    def look_for_food(self, eater: BoundedElement):
+        # for food in self.
+        pass
 
     def column_for(self, x):
         return int(x / T.block_width())
@@ -47,7 +54,7 @@ class Env:
             return 0
         else:
             row_current = row - 1
-            while row_current >= 0 and not self.is_grid_ground(col, row_current):
+            while row_current >= 0 and not self.is_ground(col, row_current):
                 row_current -= 1
             return row_current + 1
 
@@ -58,7 +65,7 @@ class Env:
             return 0
         else:
             col_current = col - 1
-            while col_current >= 0 and not self.is_grid_ground(col_current, row):
+            while col_current >= 0 and not self.is_ground(col_current, row):
                 col_current -= 1
             return col_current + 1
 
@@ -69,7 +76,7 @@ class Env:
             return GRID_HORIZONTAL_COUNT
         else:
             col_current = col + 1
-            while col_current < GRID_VERTICAL_COUNT and not self.is_grid_ground(col_current, row):
+            while col_current < GRID_VERTICAL_COUNT and not self.is_ground(col_current, row):
                 col_current += 1
             return col_current
 
