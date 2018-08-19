@@ -56,18 +56,20 @@ class BoundedElement():
 class Food(Drawable, BoundedElement):
     def __init__(self, x, y):
         super().__init__()
-        self.height = 8
-        self.width = 8
+        self.height = 12
+        self.width = 12
         self.x = x
         self.y = y
 
     def draw(self):
-        T.rect(self.x, self.y, self.width, self.height, c=4)
+        pyxel.blt(self.x, pyxel.height - self.y - self.height, 1, 0, 0, 12, 12, colkey=13)
 
 
 class Foods(Drawable):
     def __init__(self, env):
         super().__init__()
+
+        pyxel.image(1).load(0, 0, 'poop.gif')
 
         self.env = env
         self.foods = []
@@ -87,7 +89,7 @@ class Foods(Drawable):
             for col in range(GRID_HORIZONTAL_COUNT):
                 if self.env.is_food(col, row):
                     food = Food(col * T.block_width() +
-                                11, row * T.block_height() + 1)
+                                9, row * T.block_height())
                     self.foods.append(food)
                     self.elements.append(food)
 
@@ -96,7 +98,7 @@ class Player(BoundedElement, Drawable):
     def __init__(self, env):
         super().__init__()
 
-        pyxel.image(0).load(0, 0, 'ruby.png')
+        pyxel.image(0).load(0, 0, 'ruby.gif')
         self.env = env
 
         block_width = pyxel.width / GRID_HORIZONTAL_COUNT
@@ -215,16 +217,11 @@ class Player(BoundedElement, Drawable):
         self.check_food()
 
     def draw(self):
-        pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, 28, 20)
-        # T.rect(self.x, self.y, self.width, self.height, c=15)
-        # T.rect(self.x + 5, self.y, 6, 6, c=0)
         if self.dir == DIR_LEFT:
-        #     T.rect(self.x, self.y + self.height - 12, 6, 6, c=0)
-            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, -28, 20)
+            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, -28, 20, colkey=13)
         else:
-            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, 28, 20)
-        #     T.rect(self.x + self.width - 6, self.y +
-        #            self.height - 12, 6, 6, c=0)
+            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, 28, 20, colkey=13)
+
 
 
 class Score(Drawable):
@@ -238,4 +235,4 @@ class Score(Drawable):
         self.score += 1
 
     def draw(self):
-        pyxel.text(pyxel.width - 8, 4, str(self.score), 6)
+        pyxel.text(pyxel.width - 8, 4, str(self.score), 0)

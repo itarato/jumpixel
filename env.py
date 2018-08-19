@@ -21,7 +21,7 @@ class Env:
         self.food = [
             0b11110000,
             0b00000010,
-            0b00100100,
+            0b00000100,
             0b10000100,
             0b00011001,
             0b10000000,
@@ -87,7 +87,7 @@ class Env:
         row_bottom = self.next_bottom_in_column(col_lhs, e.y)
         row_bottom = max(row_bottom, self.next_bottom_in_column(col_rhs, e.y))
 
-        return row_bottom * T.block_height() + 1
+        return row_bottom * T.block_height()
 
     def is_at_bottom(self, e: BoundedElement):
         return e.y - self.bottom_for(e) < DISTANCE_ZERO_THRESHOLD
@@ -112,7 +112,7 @@ class Env:
         col_right = max(col_right, self.next_right_in_row(
             row_top, e.x + e.width))
 
-        return col_right * T.block_width() - 1
+        return col_right * T.block_width()
 
     def is_at_right(self, e: BoundedElement):
         return self.right_for(e) - (e.x + e.width) < DISTANCE_ZERO_THRESHOLD

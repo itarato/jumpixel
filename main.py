@@ -29,7 +29,7 @@ class App:
         self.scene.update()
 
     def draw(self):
-        pyxel.cls(0)
+        pyxel.cls(7)
         self.scene.draw()
 
 
