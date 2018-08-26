@@ -8,25 +8,25 @@ from events import *
 class Env:
     def __init__(self):
         self.grid = [
-            0b00000000,
-            0b11110000,
-            0b00000010,
-            0b00000000,
-            0b10000100,
-            0b00011001,
-            0b10000001,
-            0b11000111,
+            '00000000',
+            '11110000',
+            '00000010',
+            '00000000',
+            '10000100',
+            '00011001',
+            '10000001',
+            '11000111',
         ]
 
         self.food = [
-            0b11110000,
-            0b00000010,
-            0b00000100,
-            0b10000100,
-            0b00011001,
-            0b10000000,
-            0b01000110,
-            0b00111000,
+            '11110000',
+            '00000010',
+            '00000100',
+            '10000100',
+            '00011001',
+            '10000000',
+            '01000110',
+            '00111000',
         ]
 
         self.eventloop = EventLoop()
@@ -36,10 +36,6 @@ class Env:
 
     def is_food(self, col, row):
         return T.is_grid_cell_on(self.food, col, row)
-
-    def look_for_food(self, eater: BoundedElement):
-        # for food in self.
-        pass
 
     def column_for(self, x):
         return int(x / T.block_width())

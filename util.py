@@ -19,4 +19,4 @@ class T:
     def is_grid_cell_on(grid, col, row):
         col = min(max(0, col), GRID_HORIZONTAL_COUNT - 1)
         row = min(max(0, row), GRID_VERTICAL_COUNT - 1)
-        return grid[GRID_VERTICAL_COUNT - 1 - row] >> (GRID_HORIZONTAL_COUNT - 1 - col) & 1 == 1
+        return grid[GRID_VERTICAL_COUNT - 1 - row][col] == '1'

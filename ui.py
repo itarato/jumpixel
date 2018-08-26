@@ -31,9 +31,9 @@ class Blocks(Drawable):
         block_height = pyxel.height / GRID_VERTICAL_COUNT
         for y in range(GRID_VERTICAL_COUNT):
             for x in range(GRID_HORIZONTAL_COUNT):
-                if (self.env.grid[y] >> (GRID_HORIZONTAL_COUNT - x - 1)) & 1:
-                    pyxel.rect(x * block_width, y * block_height, (x + 1)
-                               * block_width - 1, (y + 1) * block_height - 1, 3)
+                if self.env.is_ground(x, y):
+                    T.rect(x * block_width, y * block_height,
+                           T.block_width(), T.block_height(), 3)
 
 
 class BoundedElement():
@@ -62,7 +62,8 @@ class Food(Drawable, BoundedElement):
         self.y = y
 
     def draw(self):
-        pyxel.blt(self.x, pyxel.height - self.y - self.height, 1, 0, 0, 12, 12, colkey=13)
+        pyxel.blt(self.x, pyxel.height - self.y -
+                  self.height, 1, 0, 0, 12, 12, colkey=13)
 
 
 class Foods(Drawable):
@@ -218,10 +219,11 @@ class Player(BoundedElement, Drawable):
 
     def draw(self):
         if self.dir == DIR_LEFT:
-            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, -28, 20, colkey=13)
+            pyxel.blt(self.x, pyxel.height - self.y -
+                      self.height, 0, 0, 0, -28, 20, colkey=13)
         else:
-            pyxel.blt(self.x, pyxel.height - self.y - self.height, 0, 0, 0, 28, 20, colkey=13)
-
+            pyxel.blt(self.x, pyxel.height - self.y -
+                      self.height, 0, 0, 0, 28, 20, colkey=13)
 
 
 class Score(Drawable):

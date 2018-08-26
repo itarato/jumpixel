@@ -16,8 +16,8 @@ class SoundEffects:
 
         pyxel.sound(SOUND_EAT).set('E2E3', 'SS', '77', 'NN', 10)
         pyxel.sound(SOUND_WALK).set('E1C1', 'SS', '66', 'NN', 5)
-        pyxel.sound(SOUND_BACKGROUND).set('E1D-1F3G3 C1D2E2E0',
-                                          'SSSS PPSS', '5555 5555', 'NNNN NNNN', 50)
+        pyxel.sound(SOUND_BACKGROUND).set(
+            'A0 F0 C0 G0', 'SSSS', '5555', 'FFFF', 100)
 
     def eat_effect(self, _):
         pyxel.play(1, SOUND_EAT)
@@ -30,4 +30,3 @@ class SoundEffects:
 
     def background_effect(self, _):
         pyxel.play(0, SOUND_BACKGROUND, loop=True)
-
