@@ -6,29 +6,21 @@ from events import *
 from map import *
 
 
-ENV_GROUND = '1'
-ENV_FOOD = '2'
-ENV_PLAYER = '9'
-
-
 class Env:
     def __init__(self):
-        self.grid = Map(GRID_HORIZONTAL_COUNT, GRID_VERTICAL_COUNT).generate()
+        self.map = Map(GRID_HORIZONTAL_COUNT, GRID_VERTICAL_COUNT)
+        self.map.generate()
         self.eventloop = EventLoop()
 
     def is_ground(self, col, row):
-        return T.is_grid_cell_on(self.grid, col, row, ENV_GROUND)
+        return self.map.is_cell(col, row, ENV_GROUND)
 
     def is_food(self, col, row):
-        return T.is_grid_cell_on(self.grid, col, row, ENV_FOOD)
+        return self.map.is_cell(col, row, ENV_FOOD)
 
     def player_pos(self):
-        for y in range(GRID_VERTICAL_COUNT):
-            for x in range(GRID_HORIZONTAL_COUNT):
-                if T.is_grid_cell_on(self.grid, x, y, ENV_PLAYER):
-                    return (x * T.block_width(), y * T.block_height())
-
-        return (0, 0)
+        pos = self.map.player_pos()
+        return (pos[0] * T.block_width(), pos[1] * T.block_height())
 
     def column_for(self, x):
         return int(x / T.block_width())
