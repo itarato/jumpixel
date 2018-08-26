@@ -116,6 +116,9 @@ class Player(BoundedElement, Drawable):
         self.v_hor = 0.0
         self.dir = DIR_LEFT
 
+        self.jump_limit_default = 2
+        self.jump_limit = self.jump_limit_default
+
     def hmove_left(self):
         return self.v_hor < 0
 
@@ -135,29 +138,29 @@ class Player(BoundedElement, Drawable):
         return self.v_vert == 0
 
     def is_hmove_btn(self):
-        return pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.KEY_A)
+        return pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT)
 
     def read_input(self):
-        if pyxel.btn(pyxel.KEY_D):
+        if pyxel.btn(pyxel.KEY_RIGHT):
             self.v_hor += VELOCITY_MOVE_STEP
             self.v_hor = min(self.v_hor, VELOCITY_MOVE_MAX)
             self.dir = DIR_RIGHT
             self.env.eventloop.send(EVENT_WALK_START)
 
-        if pyxel.btn(pyxel.KEY_A):
+        if pyxel.btn(pyxel.KEY_LEFT):
             self.v_hor -= VELOCITY_MOVE_STEP
             self.v_hor = max(self.v_hor, -VELOCITY_MOVE_MAX)
             self.dir = DIR_LEFT
             self.env.eventloop.send(EVENT_WALK_START)
 
-        if self.env.is_at_bottom(self):
-            if pyxel.btnp(pyxel.KEY_W):
-                self.v_vert = VELOCITY_JUMP
+        if self.jump_limit > 0 and pyxel.btnp(pyxel.KEY_UP):
+            self.jump_limit -= 1
+            self.v_vert = VELOCITY_JUMP
 
-        if pyxel.btnr(pyxel.KEY_W) and self.vmove_up():
+        if pyxel.btnr(pyxel.KEY_UP) and self.vmove_up():
             self.v_vert = -DISTANCE_ZERO_THRESHOLD
 
-        if pyxel.btnr(pyxel.KEY_A) or pyxel.btnr(pyxel.KEY_D):
+        if pyxel.btnr(pyxel.KEY_LEFT) or pyxel.btnr(pyxel.KEY_RIGHT):
             self.env.eventloop.send(EVENT_WALK_STOP)
 
     def update_move(self):
@@ -195,15 +198,22 @@ class Player(BoundedElement, Drawable):
                               GRAVITY_ACCELERATE)
 
         next_bottom = self.env.bottom_for(self)
+        next_top = self.env.top_for(self)
 
         if self.vmove_down and next_bottom > self.y + self.v_vert:
             self.y = next_bottom
+        elif self.vmove_up and next_top < self.y + self.v_vert + self.height:
+            self.y = next_top - self.height
+            self.v_vert = -GRAVITY_VELOCITY_START
         else:
             self.y += self.v_vert
 
         if self.env.is_at_bottom(self):
             self.y = self.env.bottom_for(self)
             self.v_vert = 0
+
+        if self.env.is_at_bottom(self):
+            self.jump_limit = self.jump_limit_default
 
     def update_fall(self):
         if self.vmove_idle() and not self.env.is_at_bottom(self):

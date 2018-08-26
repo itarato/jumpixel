@@ -47,6 +47,17 @@ class Env:
                 row_current -= 1
             return row_current + 1
 
+    def next_top_in_column(self, col, y):
+        row = self.row_for(y - DISTANCE_ZERO_THRESHOLD)
+
+        if row >= GRID_VERTICAL_COUNT:
+            return GRID_VERTICAL_COUNT
+        else:
+            row_current = row + 1
+            while row_current <= GRID_VERTICAL_COUNT and not self.is_ground(col, row_current):
+                row_current += 1
+            return row_current
+
     def next_left_in_row(self, row, x):
         col = self.column_for(x + DISTANCE_ZERO_THRESHOLD)
 
@@ -105,3 +116,16 @@ class Env:
 
     def is_at_right(self, e: BoundedElement):
         return self.right_for(e) - (e.x + e.width) < DISTANCE_ZERO_THRESHOLD
+
+    def top_for(self, e: BoundedElement):
+        col_lhs = self.column_for(e.x + DISTANCE_ZERO_THRESHOLD)
+        col_rhs = self.column_for(e.x + e.width - DISTANCE_ZERO_THRESHOLD)
+
+        row_top = self.next_top_in_column(col_lhs, e.y + e.height)
+        row_top = min(row_top, self.next_top_in_column(
+            col_rhs, e.y + e.height))
+
+        return row_top * T.block_height()
+
+    def is_at_top(self, e: BoundedElement):
+        return self.top_for(e) - (e.y + e.height) < DISTANCE_ZERO_THRESHOLD
