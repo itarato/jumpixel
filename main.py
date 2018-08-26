@@ -8,7 +8,8 @@ from sound import *
 
 class App:
     def __init__(self):
-        pyxel.init(256, 256, fps=60, caption="Ruby eats poo", border_width=16, border_color=8, scale=2)
+        pyxel.init(256, 256, fps=60, caption="Ruby eats poo",
+                   border_width=16, border_color=8, scale=4)
 
         self.env = Env()
         self.sound = SoundEffects(self.env)

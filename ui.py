@@ -107,8 +107,10 @@ class Player(BoundedElement, Drawable):
 
         self.height = 20
         self.width = 28
-        self.x = 100
-        self.y = 200
+
+        player_pos = env.player_pos()
+        self.x = player_pos[0]
+        self.y = player_pos[1]
 
         self.v_vert = GRAVITY_VELOCITY_START
         self.v_hor = 0.0
@@ -187,10 +189,10 @@ class Player(BoundedElement, Drawable):
         if self.v_vert > 0:
             self.v_vert *= GRAVITY_DECELERATE
             if self.v_vert <= 1:
-                self.v_vert = -DISTANCE_ZERO_THRESHOLD
+                self.v_vert = -GRAVITY_VELOCITY_START
         elif self.v_vert < 0:
             self.v_vert = max(VELOCITY_FALL_MAX, self.v_vert *
-                              (1.0 + GRAVITY_DECELERATE))
+                              GRAVITY_ACCELERATE)
 
         next_bottom = self.env.bottom_for(self)
 

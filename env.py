@@ -3,39 +3,32 @@ from globals import *
 from util import *
 from ui import *
 from events import *
+from map import *
+
+
+ENV_GROUND = '1'
+ENV_FOOD = '2'
+ENV_PLAYER = '9'
 
 
 class Env:
     def __init__(self):
-        self.grid = [
-            '00000000',
-            '11110000',
-            '00000010',
-            '00000000',
-            '10000100',
-            '00011001',
-            '10000001',
-            '11000111',
-        ]
-
-        self.food = [
-            '11110000',
-            '00000010',
-            '00000100',
-            '10000100',
-            '00011001',
-            '10000000',
-            '01000110',
-            '00111000',
-        ]
-
+        self.grid = Map(GRID_HORIZONTAL_COUNT, GRID_VERTICAL_COUNT).generate()
         self.eventloop = EventLoop()
 
     def is_ground(self, col, row):
-        return T.is_grid_cell_on(self.grid, col, row)
+        return T.is_grid_cell_on(self.grid, col, row, ENV_GROUND)
 
     def is_food(self, col, row):
-        return T.is_grid_cell_on(self.food, col, row)
+        return T.is_grid_cell_on(self.grid, col, row, ENV_FOOD)
+
+    def player_pos(self):
+        for y in range(GRID_VERTICAL_COUNT):
+            for x in range(GRID_HORIZONTAL_COUNT):
+                if T.is_grid_cell_on(self.grid, x, y, ENV_PLAYER):
+                    return (x * T.block_width(), y * T.block_height())
+
+        return (0, 0)
 
     def column_for(self, x):
         return int(x / T.block_width())
@@ -105,7 +98,7 @@ class Env:
         row_top = self.row_for(e.y + e.height)
 
         col_right = self.next_right_in_row(row_bottom, e.x + e.width)
-        col_right = max(col_right, self.next_right_in_row(
+        col_right = min(col_right, self.next_right_in_row(
             row_top, e.x + e.width))
 
         return col_right * T.block_width()
